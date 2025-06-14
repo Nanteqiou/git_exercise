@@ -1,44 +1,57 @@
-def ASSIGNMENT(new_list, i, old_list, j):
-    new_list[i] = old_list[j]
+def assignment(target_list, target_idx, reduced_list, reduced_idx):
+    """Assigns value from reduced_list[reduced_idx] to target_list[target_idx]."""
+    target_list[target_idx] = reduced_list[reduced_idx]
 
 
-def mergeSort(list_to_sort_by_merge):
-    if (
-        len(list_to_sort_by_merge) > 1
-        and not len(list_to_sort_by_merge) < 1
-        and len(list_to_sort_by_merge) != 0
-    ):
-        mid = len(list_to_sort_by_merge) // 2
-        left = list_to_sort_by_merge[:mid]
-        right = list_to_sort_by_merge[mid:]
+def merge_sort(list_to_sort):
+    """
+    Sorts a list using the merge sort algorithm.
+    Args:
+        lst (list): The list to sort.
+    Returns:
+        list: The sorted list.
+    """
+    main_length = len(list_to_sort)
+    
+    if (main_length > 1):
+        mid = main_length // 2
+        left_half = list_to_sort[:mid]
+        right_half = list_to_sort[mid:]
+        
+        # Cut recursively lists to halves
+        merge_sort(left_half)
+        merge_sort(right_half)
 
-        mergeSort(left)
-        mergeSort(right)
-
-        l = 0
-        r = 0
-        i = 0
-
-        while l < len(left) and r < len(right):
-            if left[l] <= right[r]:
-                ASSIGNMENT(new_list=list_to_sort_by_merge, i=i, old_list=left, j=l)
-                l += 1
+        i = 0   #left_half iterator
+        j = 0   #right_half iterator 
+        k = 0   #iterator for merging
+        
+        # Merge all halves
+        left_length = len(left_half)
+        right_length = len(right_half)
+        
+        while i < left_length and j < right_length:
+            if left_half[i] <= right_half[j]:
+                assignment(list_to_sort, k, left_half, i)
+                i += 1
             else:
-                ASSIGNMENT(new_list=list_to_sort_by_merge, i=i, old_list=right, j=r)
-                r += 1
+                assignment(list_to_sort, k, right_half, j)
+                j += 1
+            k += 1
+        
+        # Copy remaining elements
+        while i < left_length:
+            list_to_sort[k] = left_half[i]
             i += 1
+            k += 1
 
-        while l < len(left):
-            list_to_sort_by_merge[i] = left[l]
-            l += 1
-            i += 1
-
-        while r < len(right):
-            list_to_sort_by_merge[i] = right[r]
-            r += 1
-            i += 1
-    return list_to_sort_by_merge
-
+        while j < right_length:
+            list_to_sort[k] = right_half[j]
+            j += 1
+            k += 1
+    # In this case, we decided that the function returns a list object for better testing readability
+    
+    return list_to_sort
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -48,7 +61,7 @@ base_list = [54, 26, 93, 17, 77, 31, 44, 55, 20]
 base_length = len(base_list)
 base_positions = range(base_length)
 
-sorted_list = mergeSort(base_list.copy())
+sorted_list = merge_sort(base_list.copy())
  
 sorted_length = (len(sorted_list))
 sorted_positions = range(sorted_length)
